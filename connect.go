@@ -1,4 +1,4 @@
-package scene
+package main
 
 import (
 	"math/rand"

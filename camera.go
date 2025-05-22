@@ -1,8 +1,6 @@
-package camera
+package main
 
 import (
-	// "image/color"
-
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -10,6 +8,7 @@ type Camera struct {
 	img *ebiten.Image
 	Op *ebiten.DrawImageOptions
 	w, h int
+	Offset FloatPoint
 	multiply int
 }
 
@@ -31,6 +30,8 @@ func NewCamera(w, h int) *Camera {
 
 func (self *Camera) Translate(x, y float64) {
 	self.Op.GeoM.Translate(x, y)
+	self.Offset.X += x
+	self.Offset.Y += y
 }
 
 func (self *Camera) Rotate(theta float64) {
@@ -40,6 +41,7 @@ func (self *Camera) Rotate(theta float64) {
 func (self *Camera) Reset() {
 	self.Op = &ebiten.DrawImageOptions{}
 	self.Op.GeoM.Translate(-float64(self.w * self.multiply / 3), -float64(self.h * self.multiply / 3))
+	self.Offset = FloatPoint{}
 }
 
 func(self *Camera) Draw(canvas *ebiten.Image) {

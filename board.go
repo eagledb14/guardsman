@@ -1,10 +1,7 @@
-package scene
+package main
 
 import (
 	"image/color"
-
-	"github.com/eagledb14/guardsman/graphics"
-	"github.com/eagledb14/guardsman/camera"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -12,6 +9,7 @@ import (
 
 type Board struct {
 	tiles [][]int
+	mesh *ebiten.Image
 	w, h int
 	length int
 	start Point
@@ -46,11 +44,19 @@ func NewBoard(w, h, length int) *Board {
 
 	b.tiles[b.start.Y][b.start.X] = 2
 	b.tiles[b.end.Y][b.end.X] = 3
+	b.mesh = ebiten.NewImage((w + 2)* b.size, (h + 2) * b.size)
+	b.CreateMesh()
 
 	return b
 }
 
-func (self *Board) Draw(camera *camera.Camera) {
+func (self *Board) Draw(camera *Camera) {
+	op := ebiten.DrawImageOptions{}
+	camera.DrawImage(self.mesh, op)
+}
+
+// func (self *Board) Draw(camera *camera.Camera) {
+func (self *Board) CreateMesh() {
 	for i := range self.w {
 		for j := range self.h {
 
@@ -58,44 +64,43 @@ func (self *Board) Draw(camera *camera.Camera) {
 
 			//floor
 			if self.tiles[j][i] == 1 {
-				img = graphics.NewRect(self.size, self.size, color.RGBA{155,176,195,255})
+				img = NewRect(self.size, self.size, color.RGBA{155,176,195,255})
 			// } else if self.tiles[j][i] == 0 { //walls
 			// 	img = graphics.NewRect(self.size, self.size, color.RGBA{0,0,0,0})
 			} else if self.tiles[j][i] == 2 { // start
 				// img = graphics.NewRect(self.size, self.size, color.RGBA{0,255,0,255})
-				img = graphics.NewRect(self.size, self.size, color.RGBA{155,176,195,255})
+				img = NewRect(self.size, self.size, color.RGBA{155,176,195,255})
 			} else if self.tiles[j][i] == 3 { //end
-				img = graphics.NewRect(self.size, self.size, color.RGBA{255,0,0,255})
+				img = NewRect(self.size, self.size, color.RGBA{255,0,0,255})
 			}
 			
-
 			op := ebiten.DrawImageOptions{}
 			op.GeoM.Translate(float64((j + 1) * self.size), float64((i + 1) * self.size))
 
-			camera.DrawImage(img, op)
+			self.mesh.DrawImage(img, &op)
 		}
 	}
 
 	// draw border
-	img := graphics.NewRect(self.size, self.size, color.RGBA{255,255,255,255})
+	img := NewRect(self.size, self.size, color.RGBA{255,255,255,255})
 	for i := range self.w + 1 {
 		op := ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(i * self.size), 0)
-		camera.DrawImage(img, op)
+		self.mesh.DrawImage(img, &op)
 
 		op = ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64(i * self.size), float64((self.h + 1) * self.size))
-		camera.DrawImage(img, op)
+		self.mesh.DrawImage(img, &op)
 	}
 
 	for i := range self.h + 1 {
 		op := ebiten.DrawImageOptions{}
 		op.GeoM.Translate(0, float64(i * self.size))
-		camera.DrawImage(img, op)
+		self.mesh.DrawImage(img, &op)
 
 		op = ebiten.DrawImageOptions{}
 		op.GeoM.Translate(float64((self.w + 1) * self.size), float64(i * self.size))
-		camera.DrawImage(img, op)
+		self.mesh.DrawImage(img, &op)
 	}
 }
 
