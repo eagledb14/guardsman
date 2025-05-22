@@ -7,8 +7,9 @@ var state GameState
 
 type GameState struct {
 	Cam *Camera
-	player Actor
+	player *Actor
 	board *Board
+	Bullets []*Bullet
 	w, h int
 }
 
@@ -31,6 +32,7 @@ func (self *GameState) NextBoard() {
 	// self.cam.Translate(0,0)
 
 	state.player.Reset()
-	state.player.Translate(y,x)
+	state.player.Translate(y + float64(self.board.size / 2),x + float64(self.board.size / 2))
+	self.Bullets = []*Bullet{}
 	// self.player.Translate(0,0)
 }

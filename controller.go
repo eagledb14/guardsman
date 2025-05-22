@@ -50,6 +50,10 @@ func (self *PlayerController) Update(pos FloatPoint) Action {
 
 	a.Rotate += math.Atan2(pos.Y - float64(y) + dy, pos.X - float64(x) + dx)
 
+	if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
+		a.DoShoot = true
+	}
+
 	return a
 }
 

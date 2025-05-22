@@ -1,6 +1,7 @@
 package main
 
 import (
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -31,12 +32,21 @@ func (self *DungeonScene) Update() error {
 
 	state.Cam.Translate(-action.Translate.X, -action.Translate.Y)
 
+	for _, bullet := range state.Bullets {
+		bullet.Update()
+	}
+
 	return nil
 }
 
-
 func (self *DungeonScene) Draw(canvas *ebiten.Image) {
 	state.board.Draw(state.Cam)
+
+	for _, bullet := range state.Bullets {
+		bullet.Draw(state.Cam)
+	}
+
 	state.player.Draw(state.Cam)
+
 	state.Cam.Draw(canvas)
 }

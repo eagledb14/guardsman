@@ -9,7 +9,7 @@ type Camera struct {
 	Op *ebiten.DrawImageOptions
 	w, h int
 	Offset FloatPoint
-	multiply int
+	multiplier int
 }
 
 func NewCamera(w, h int) *Camera {
@@ -24,7 +24,7 @@ func NewCamera(w, h int) *Camera {
 		Op: op,
 		w: w,
 		h: h,
-		multiply: 5,
+		multiplier: 5,
 	}
 }
 
@@ -40,7 +40,7 @@ func (self *Camera) Rotate(theta float64) {
 
 func (self *Camera) Reset() {
 	self.Op = &ebiten.DrawImageOptions{}
-	self.Op.GeoM.Translate(-float64(self.w * self.multiply / 3), -float64(self.h * self.multiply / 3))
+	self.Op.GeoM.Translate(-float64(self.w * self.multiplier / 3), -float64(self.h * self.multiplier / 3))
 	self.Offset = FloatPoint{}
 }
 
@@ -52,6 +52,6 @@ func(self *Camera) Draw(canvas *ebiten.Image) {
 }
 
 func (self *Camera) DrawImage(scene *ebiten.Image, op ebiten.DrawImageOptions) {
-	op.GeoM.Translate(float64(self.w * self.multiply / 3), float64(self.h * self.multiply / 3))
+	op.GeoM.Translate(float64(self.w * self.multiplier / 3), float64(self.h * self.multiplier / 3))
 	self.img.DrawImage(scene, &op)
 }

@@ -8,63 +8,73 @@ import (
 
 type Actor struct {
 	img *ebiten.Image
-	pos FloatPoint
-	rotation float64
+	Pos FloatPoint
+	Rotation float64
 	Controller IController
-	move bool
+	// move bool
 	size int
+	Weapon IWeopan
 }
 
 type FloatPoint struct {
 	X, Y float64
 }
 
-func NewActor(x, y float64, rotation float64, controller IController) Actor {
+func NewActor(x, y float64, rotation float64, controller IController) *Actor {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(x, y)
 	op.GeoM.Rotate(rotation)
 	size := 50
 
-	return Actor {
+	a := Actor {
 		img: NewRect(size, size, color.RGBA{0,102,204,255}),
 		Controller: controller,
 		size: size,
 	}
+	a.Weapon = NewPistol(&a)
+	return &a
 }
 
-func NewPlayerActor(x, y float64, rotation float64) Actor {
+func NewPlayerActor(x, y float64, rotation float64) *Actor {
 	c := NewPlayerController()
 
 	return NewActor(x, y, rotation, c)
 }
 
 func (self *Actor) Update() Action {
-	a := self.Controller.Update(self.pos)
+	a := self.Controller.Update(self.Pos)
 
 	// if !self.move {
-	self.pos.X += a.Translate.X
-	self.pos.Y += a.Translate.Y
+	self.Pos.X += a.Translate.X
+	self.Pos.Y += a.Translate.Y
 	// }
 
-	self.rotation = a.Rotate
+	self.Rotation = a.Rotate
+
+	if a.DoShoot {
+		self.Weapon.Fire()
+	}
+	self.Weapon.Update()
 
 	return a
 }
 
 func (self *Actor) Reset() {
-	self.pos = FloatPoint{}
+	self.Pos = FloatPoint{}
 }
 
 func (self *Actor) Translate(x, y float64) {
-	self.pos.X += x
-	self.pos.Y += y
+	self.Pos.X += x
+	self.Pos.Y += y
 }
 
 func (self *Actor) Draw(cam *Camera) {
 	op := ebiten.DrawImageOptions{}
 	op.GeoM.Translate(-float64(self.size / 2), -float64(self.size / 2))
-	op.GeoM.Rotate(self.rotation)
-	op.GeoM.Translate(self.pos.X , self.pos.Y)
+	op.GeoM.Rotate(self.Rotation)
+	op.GeoM.Translate(self.Pos.X , self.Pos.Y)
+
+	self.Weapon.Draw(cam)
 
 	cam.DrawImage(self.img, op)
 }

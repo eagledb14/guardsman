@@ -82,26 +82,26 @@ func (self *Board) CreateMesh() {
 	}
 
 	// draw border
-	img := NewRect(self.size, self.size, color.RGBA{255,255,255,255})
-	for i := range self.w + 1 {
-		op := ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(i * self.size), 0)
-		self.mesh.DrawImage(img, &op)
-
-		op = ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64(i * self.size), float64((self.h + 1) * self.size))
-		self.mesh.DrawImage(img, &op)
-	}
-
-	for i := range self.h + 1 {
-		op := ebiten.DrawImageOptions{}
-		op.GeoM.Translate(0, float64(i * self.size))
-		self.mesh.DrawImage(img, &op)
-
-		op = ebiten.DrawImageOptions{}
-		op.GeoM.Translate(float64((self.w + 1) * self.size), float64(i * self.size))
-		self.mesh.DrawImage(img, &op)
-	}
+	// img := NewRect(self.size, self.size, color.RGBA{255,255,255,255})
+	// for i := range self.w + 1 {
+	// 	op := ebiten.DrawImageOptions{}
+	// 	op.GeoM.Translate(float64(i * self.size), 0)
+	// 	self.mesh.DrawImage(img, &op)
+	//
+	// 	op = ebiten.DrawImageOptions{}
+	// 	op.GeoM.Translate(float64(i * self.size), float64((self.h + 1) * self.size))
+	// 	self.mesh.DrawImage(img, &op)
+	// }
+	//
+	// for i := range self.h + 1 {
+	// 	op := ebiten.DrawImageOptions{}
+	// 	op.GeoM.Translate(0, float64(i * self.size))
+	// 	self.mesh.DrawImage(img, &op)
+	//
+	// 	op = ebiten.DrawImageOptions{}
+	// 	op.GeoM.Translate(float64((self.w + 1) * self.size), float64(i * self.size))
+	// 	self.mesh.DrawImage(img, &op)
+	// }
 }
 
 
