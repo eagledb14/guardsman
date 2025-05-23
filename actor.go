@@ -4,6 +4,7 @@ import (
 	"image/color"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/solarlune/resolv"
 )
 
 type Actor struct {
@@ -32,6 +33,7 @@ func NewActor(x, y float64, rotation float64, controller IController) *Actor {
 		size: size,
 	}
 	a.Weapon = NewPistol(a)
+	// controller.SetActor(a)
 	return a
 }
 
@@ -49,7 +51,7 @@ func (self *Actor) Update() Action {
 	self.Pos.Y += a.Translate.Y
 
 	// if self.Controller.
-	if hitWall(self.GetHitBox()) {
+	if hitWall(self.GetCenterBox()) {
 		self.Pos = oldPos
 		a.Translate = FloatPoint{}
 	}
@@ -84,11 +86,24 @@ func (self *Actor) Draw(cam *Camera) {
 	cam.DrawImage(self.img, op)
 }
 
-func (self *Actor) GetHitBox() Hitbox {
-	return NewHitBox(
+func (self *Actor) GetHitBox() *resolv.ConvexPolygon {
+	b := resolv.NewRectangle(
 		self.Pos.X, 
 		self.Pos.Y,
 		float64(self.size),
 		float64(self.size),
 	)
+	b.Rotate(self.Rotation)
+	return b
+}
+
+func (self *Actor) GetCenterBox() *resolv.ConvexPolygon {
+	b := resolv.NewRectangle(
+		self.Pos.X, 
+		self.Pos.Y,
+		1,
+		1,
+	)
+	b.Rotate(self.Rotation)
+	return b
 }

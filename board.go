@@ -3,6 +3,7 @@ package main
 import (
 	"image/color"
 
+	"github.com/solarlune/resolv"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -108,38 +109,42 @@ func (self *Board) Offset() (float64, float64) {
 	return float64(self.size * self.start.X) + float64(self.size), float64(self.size * self.start.Y) + float64(self.size)
 }
 
-func (self *Board) GetWallHitBox() []Hitbox {
-	boxes := []Hitbox{}
+func (self *Board) GetWallHitBox() []*resolv.ConvexPolygon {
+	// boxes := []Hitbox{}
+	// boxes := []resolv.ShapeCollection{}
+	boxes := []*resolv.ConvexPolygon{}
 	for i := range self.w {
 		for j := range self.h {
 			if self.tiles[j][i] == 0 {
-				newBox := NewHitBox(float64((j + 1) * self.size),float64((i + 1) * self.size), float64(self.size), float64(self.size))
+				newBox := resolv.NewRectangle(float64((j + 1) * self.size),float64((i + 1) * self.size), float64(self.size), float64(self.size))
+
 				boxes = append(boxes, newBox)
 			}
 		}
 	}
 
 	for i := range self.w + 1 {
-		newBox := NewHitBox(float64(i * self.size), 0, float64(self.size), float64(self.size))
+		newBox := resolv.NewRectangle(float64(i * self.size), 0, float64(self.size), float64(self.size))
 		boxes = append(boxes, newBox)
 
-		newBox = NewHitBox(float64(i * self.size), float64(self.h + 1), float64(self.size), float64(self.size))
+		newBox = resolv.NewRectangle(float64(i * self.size), float64(self.h + 1), float64(self.size), float64(self.size))
 		boxes = append(boxes, newBox)
 	}
 
 	for i := range self.h + 1 {
-		newBox := NewHitBox(0, float64(i * self.size), float64(self.size), float64(self.size))
+		newBox := resolv.NewRectangle(0, float64(i * self.size), float64(self.size), float64(self.size))
 		boxes = append(boxes, newBox)
 
-		newBox = NewHitBox(float64(self.w + 1), float64(i * self.size), float64(self.size), float64(self.size))
+		newBox = resolv.NewRectangle(float64(self.w + 1), float64(i * self.size), float64(self.size), float64(self.size))
 		boxes = append(boxes, newBox)
 	}
 
 	return boxes
 }
 
-func (self *Board) IsOnFinish(playerBox Hitbox) bool {
-	finishBox := NewHitBox(float64(self.end.Y * self.size + self.size), float64(self.end.X * self.size + self.size), float64(self.size), float64(self.size))
+func (self *Board) IsOnFinish(playerBox *resolv.ConvexPolygon) bool {
+	finishBox := resolv.NewRectangle(float64(self.end.Y * self.size + self.size), float64(self.end.X * self.size + self.size), float64(self.size), float64(self.size))
 
-	return finishBox.IsOverlap(&playerBox)
+	// return finishBox.IsOverlap(&playerBox)
+	return playerBox.IsIntersecting(finishBox)
 }

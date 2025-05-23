@@ -4,6 +4,7 @@ import (
 	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/solarlune/resolv"
 )
 
 type IController interface {
@@ -58,11 +59,11 @@ func (self *PlayerController) Update(pos FloatPoint) Action {
 	return a
 }
 
-func hitWall(actorBox Hitbox) bool {
+func hitWall(actorBox *resolv.ConvexPolygon) bool {
 	walls := state.board.GetWallHitBox()
 
 	for _, wall := range walls {
-		if actorBox.IsOverlap(&wall) {
+		if  actorBox.IsIntersecting(wall) {
 			return true
 		}
 	}

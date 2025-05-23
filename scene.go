@@ -35,7 +35,7 @@ func (self *DungeonScene) Update() error {
 
 	state.UpdateBullets()
 
-	if state.board.IsOnFinish(state.player.GetHitBox()) {
+	if state.board.IsOnFinish(state.player.GetCenterBox()) {
 		state.NextBoard()
 	}
 
