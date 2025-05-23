@@ -1,6 +1,8 @@
 package main
 
 import (
+	"image/color"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -54,4 +56,8 @@ func(self *Camera) Draw(canvas *ebiten.Image) {
 func (self *Camera) DrawImage(scene *ebiten.Image, op ebiten.DrawImageOptions) {
 	op.GeoM.Translate(float64(self.w * self.multiplier / 3), float64(self.h * self.multiplier / 3))
 	self.img.DrawImage(scene, &op)
+}
+
+func (self *Camera) Set(x, y int, color color.Color) {
+	self.img.Set((self.w * self.multiplier / 3) + x, (self.h * self.multiplier / 3) + y, color)
 }

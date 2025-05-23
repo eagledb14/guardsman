@@ -49,6 +49,7 @@ type Bullet struct {
 	pos FloatPoint
 	vel FloatPoint
 	size int
+	ttl int
 }
 
 func NewBullet(x, y float64, rotation float64) *Bullet {
@@ -68,13 +69,21 @@ func NewBullet(x, y float64, rotation float64) *Bullet {
 			X: x,
 			Y: y,
 		},
+		ttl: 50,
 	}
 }
 
-func (self *Bullet) Update() error {
+func (self *Bullet) Update() bool {
 	self.pos.X += self.vel.X
 	self.pos.Y += self.vel.Y
-	return nil
+
+	self.ttl--
+
+	if self.ttl <= 0 {
+		return true
+	}
+
+	return false
 }
 
 func (self *Bullet) Draw(cam *Camera) {

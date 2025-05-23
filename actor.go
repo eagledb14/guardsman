@@ -26,13 +26,13 @@ func NewActor(x, y float64, rotation float64, controller IController) *Actor {
 	op.GeoM.Rotate(rotation)
 	size := 50
 
-	a := Actor {
+	a := &Actor {
 		img: NewRect(size, size, color.RGBA{0,102,204,255}),
 		Controller: controller,
 		size: size,
 	}
-	a.Weapon = NewPistol(&a)
-	return &a
+	a.Weapon = NewPistol(a)
+	return a
 }
 
 func NewPlayerActor(x, y float64, rotation float64) *Actor {
@@ -44,10 +44,15 @@ func NewPlayerActor(x, y float64, rotation float64) *Actor {
 func (self *Actor) Update() Action {
 	a := self.Controller.Update(self.Pos)
 
-	// if !self.move {
+	oldPos := self.Pos
 	self.Pos.X += a.Translate.X
 	self.Pos.Y += a.Translate.Y
-	// }
+
+	// if self.Controller.
+	if hitWall(self.GetHitBox()) {
+		self.Pos = oldPos
+		a.Translate = FloatPoint{}
+	}
 
 	self.Rotation = a.Rotate
 
@@ -77,4 +82,13 @@ func (self *Actor) Draw(cam *Camera) {
 	self.Weapon.Draw(cam)
 
 	cam.DrawImage(self.img, op)
+}
+
+func (self *Actor) GetHitBox() Hitbox {
+	return NewHitBox(
+		self.Pos.X, 
+		self.Pos.Y,
+		float64(self.size),
+		float64(self.size),
+	)
 }

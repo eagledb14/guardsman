@@ -26,6 +26,7 @@ func NewPlayerController() *PlayerController {
 	}
 }
 
+
 func (self *PlayerController) Update(pos FloatPoint) Action {
 	a := Action{}
 	if ebiten.IsKeyPressed(ebiten.KeyW) {
@@ -55,6 +56,18 @@ func (self *PlayerController) Update(pos FloatPoint) Action {
 	}
 
 	return a
+}
+
+func hitWall(actorBox Hitbox) bool {
+	walls := state.board.GetWallHitBox()
+
+	for _, wall := range walls {
+		if actorBox.IsOverlap(&wall) {
+			return true
+		}
+	}
+
+	return false
 }
 
 type AIController struct {
